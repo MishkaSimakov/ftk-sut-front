@@ -7,8 +7,11 @@
       <p class="mt-2 text-gray-500 text-xl">Не выходя из дома!</p>
     </div>
 
-    <div class="py-3 grid grid-cols-2">
-      <News v-for="current_news in news" :key="current_news.id" :news="current_news"></News>
+    <div class="py-3">
+      <div class="text-center text-2lg text-gray-500 mt-6" v-if="$fetchState.pending">Загрузка...</div>
+      <div class="grid grid-cols-2">
+        <News v-for="current_news in news" :key="current_news.id" :news="current_news"></News>
+      </div>
     </div>
   </div>
 </template>

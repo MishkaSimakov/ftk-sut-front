@@ -28,6 +28,7 @@ export default {
     buildModules: [
         '@nuxtjs/tailwindcss',
         '@nuxt/http',
+        '@nuxtjs/moment'
     ],
 
     // Modules (https://go.nuxtjs.dev/config-modules)
@@ -35,4 +36,10 @@ export default {
 
     // Build Configuration (https://go.nuxtjs.dev/config-build)
     build: {},
+
+    moment: {
+        defaultLocale: 'ru',
+        timezone: true,
+        defaultTimezone: 'Europe/Moscow'
+    }
 }
