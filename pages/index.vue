@@ -1,6 +1,6 @@
 <template>
   <div class="container mx-auto mt-6">
-    <News></News>
+<!--    <News></News>-->
   </div>
 </template>
 

@@ -1,37 +1,87 @@
 <template>
-  <div class="divide-y divide-gray-400 mx-8">
-    <div class="my-10">
-      <p class="text-4xl tracking-tight leading-10 font-bold text-gray-900 sm:text-5xl sm:leading-none md:text-6xl">
-        Последние новости ФТК</p>
+    <div class="container mx-auto">
+        <div class="text-center text-lg text-gray-500 mt-6" v-if="$fetchState.pending">Загрузка...</div>
 
-      <p class="mt-2 text-gray-500 text-xl">Не выходя из дома!</p>
-    </div>
+        <div v-else>
+            <div class="flex items-end space-x-4">
+                <NuxtLink to="/news/create" v-if="$auth.loggedIn ? $auth.user.is_admin : false" :class="['my-3', button('indigo') ]">
+                    Добавить новость
+                </NuxtLink>
 
-    <div class="py-3">
-      <div class="text-center text-2lg text-gray-500 mt-6" v-if="$fetchState.pending">Загрузка...</div>
-      <div class="grid grid-cols-2">
-        <News v-for="current_news in news" :key="current_news.id" :news="current_news"></News>
-      </div>
+                <a
+                    v-on:click.prevent="clickOnClub(club)"
+                    v-for="club in clubs"
+                    :key="club.id"
+                    href="#"
+                    :class="['my-3', button(club.color, club.active)]"
+                >
+                    {{ club.name }}
+                </a>
+            </div>
+
+            <div v-if="filteredNews.length">
+                <News v-for="current_news in filteredNews" :key="current_news.id" :news="current_news"></News>
+            </div>
+            <div v-else class="text-center text-xl mt-6">
+                🦖 Ничего не найдено!
+            </div>
+        </div>
     </div>
-  </div>
 </template>
 
 <script>
 import News from "../../components/news/News";
+
 export default {
-  data() {
-    return {
-      news: []
+    data() {
+        return {
+            news: [],
+            clubs: []
+        }
+    },
+    components: {
+        News
+    },
+    async fetch() {
+        await this.$axios.get('http://localhost:8000/api/news').then((response) => {
+            this.news = response.data
+        });
+
+        await this.$axios.get('http://localhost:8000/api/clubs').then((response) => {
+            this.clubs = response.data
+        })
+    },
+    methods: {
+        clickOnClub(club) {
+            this.clubs = this.clubs.map((c) => {
+                if (club.id === c.id) {
+                    c.active = !c.active
+                }
+
+                return c
+            })
+        },
+        button(color, active = false) {
+            if (active) {
+                return `whitespace-no-wrap px-4 py-2 border-2 border-transparent text-base leading-6 font-medium rounded-md text-white bg-${color}-600 hover:bg-${color}-500 focus:outline-none transition ease-in-out duration-150`
+            }
+
+            return `whitespace-no-wrap px-4 py-2 border-2 border-${color}-500 text-base leading-6 font-medium rounded-md bg-white hover:bg-${color}-500 hover:text-white focus:outline-none transition ease-in-out duration-150`
+        }
+    },
+    computed: {
+        filteredNews() {
+            if (this.clubs.some((club) => club.active)) {
+                return this.news.filter((news) => {
+                    return news.clubs.some((club) => {
+                        club.active
+                    })
+                });
+            }
+
+            return this.news
+        }
     }
-  },
-  components: {
-    News
-  },
-  async fetch() {
-    this.news = await this.$http.$get(
-      `http://localhost:8000/api/news`
-    )
-  }
 }
 </script>
 

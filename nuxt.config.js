@@ -16,7 +16,9 @@ export default {
     },
 
     // Global CSS (https://go.nuxtjs.dev/config-css)
-    css: [],
+    css: [
+        '@yaireo/tagify/dist/tagify.css',
+    ],
 
     // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
     plugins: [],
@@ -28,7 +30,10 @@ export default {
     buildModules: [
         '@nuxtjs/tailwindcss',
         '@nuxt/http',
-        '@nuxtjs/moment'
+        '@nuxtjs/moment',
+        '@nuxtjs/axios',
+        '@nuxtjs/auth-next',
+        '@nuxtjs/fontawesome',
     ],
 
     // Modules (https://go.nuxtjs.dev/config-modules)
@@ -41,5 +46,38 @@ export default {
         defaultLocale: 'ru',
         timezone: true,
         defaultTimezone: 'Europe/Moscow'
-    }
+    },
+
+    auth: {
+        strategies: {
+            local: {
+                endpoints: {
+                    login: {
+                        url: '/login',
+                        method: 'post'
+                    },
+                    logout: {
+                        url: '/logout',
+                        method: 'post'
+                    },
+                    user: {
+                        url: '/api/user',
+                        method: 'get',
+                        propertyName: false
+                    }
+                },
+                token: {
+                    required: false,
+                    type: false,
+                },
+                url: 'http://localhost:8000',
+                provider: 'laravel/sanctum',
+            }
+        }
+    },
+    fontawesome: {
+        icons: {
+            solid: ['faPlus'],
+        },
+    },
 }
