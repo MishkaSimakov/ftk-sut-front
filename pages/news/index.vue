@@ -3,7 +3,7 @@
         <div class="text-center text-lg text-gray-500 mt-6" v-if="$fetchState.pending">Загрузка...</div>
 
         <div v-else>
-            <div class="flex items-end space-x-4">
+            <div class="flex items-end space-x-4 mw-100 overflow-x-scroll xl:overflow-auto">
                 <NuxtLink to="/news/create" v-if="$auth.loggedIn ? $auth.user.is_admin : false" :class="['my-3', button('indigo') ]">
                     Добавить новость
                 </NuxtLink>
@@ -72,10 +72,10 @@ export default {
     computed: {
         filteredNews() {
             if (this.clubs.some((club) => club.active)) {
+                let activeIds = this.clubs.filter((club) => club.active).map((club) => club.id)
+
                 return this.news.filter((news) => {
-                    return news.clubs.some((club) => {
-                        club.active
-                    })
+                    return news.clubs.some((club) => activeIds.includes(club.id))
                 });
             }
 

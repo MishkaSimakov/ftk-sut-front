@@ -87,6 +87,9 @@ import Tagify from "@yaireo/tagify";
 
 export default {
     middleware: 'admin',
+    props: [
+        'news'
+    ],
     data() {
         return {
             form: {
@@ -129,6 +132,8 @@ export default {
         }
     },
     mounted() {
+        console.log(this.news)
+
         let input = document.getElementById("clubs");
 
         this.$axios.get('http://localhost:8000/api/clubs').then((response) => {

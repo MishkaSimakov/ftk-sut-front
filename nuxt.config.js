@@ -18,6 +18,7 @@ export default {
     // Global CSS (https://go.nuxtjs.dev/config-css)
     css: [
         '@yaireo/tagify/dist/tagify.css',
+        '~/assets/Popper.scss',
     ],
 
     // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
@@ -37,7 +38,9 @@ export default {
     ],
 
     // Modules (https://go.nuxtjs.dev/config-modules)
-    modules: [],
+    modules: [
+        ['vue-scrollto/nuxt', { duration: 300 }],
+    ],
 
     // Build Configuration (https://go.nuxtjs.dev/config-build)
     build: {},
@@ -49,6 +52,12 @@ export default {
     },
 
     auth: {
+        redirect: {
+            login: '/auth/login',
+            logout: '/',
+            home: '/'
+        },
+
         strategies: {
             local: {
                 endpoints: {
@@ -77,7 +86,7 @@ export default {
     },
     fontawesome: {
         icons: {
-            solid: ['faPlus'],
+            solid: ['faEllipsisV', 'faEye'],
         },
     },
 }

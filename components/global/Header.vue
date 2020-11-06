@@ -10,7 +10,7 @@
                         </NuxtLink>
                     </div>
 
-                    <nav class="hidden md:flex space-x-10">
+                    <nav class="hidden xl:flex space-x-10">
                         <NuxtLink to="/news"
                                   class="text-base leading-6 font-medium text-gray-500 hover:text-gray-900 focus:outline-none focus:text-gray-900 transition ease-in-out duration-150">
                             Новости

@@ -19,7 +19,9 @@
     "@yaireo/tagify": "^3.20.3",
     "core-js": "^3.6.5",
     "nuxt": "^2.14.6",
-    "tiptap-vuetify": "^2.24.0"
+    "tiptap-vuetify": "^2.24.0",
+    "vue-popperjs": "^2.3.0",
+    "vue-scrollto": "^2.20.0"
   },
   "devDependencies": {
     "@nuxtjs/tailwindcss": "^3.2.0",
