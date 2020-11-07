@@ -1,4 +1,5 @@
 <template>
+<!--    TODO: make normal validation (maybe Vuelidate)-->
     <div class="container mx-auto">
         <div class="bg-white border rounded-lg p-6 mt-6">
             <form class="w-full">
@@ -90,10 +91,10 @@ export default {
     data() {
         return {
             form: {
-                title: '',
-                body: '',
+                title: null,
+                body: null,
                 date: this.$moment().format('YYYY-MM-DD'),
-                clubs: ''
+                clubs: null
             },
             clubs: [],
             tagify: null,
@@ -126,18 +127,9 @@ export default {
                     this.errors = error.response.data.errors;
                 }
             });
-        }
-    },
-    mounted() {
-        let input = document.getElementById("clubs");
-
-        this.$axios.get('http://localhost:8000/api/clubs').then((response) => {
-            this.clubs = response.data.map((club) => {
-                return {
-                    value: club.name,
-                    code: club.id
-                }
-            })
+        },
+        defineTagify() {
+            let input = document.getElementById("clubs");
 
             this.tagify = new Tagify(input, {
                 whitelist: this.clubs,
@@ -147,6 +139,18 @@ export default {
                     closeOnSelect: true
                 }
             });
+        }
+    },
+    async fetch() {
+        await this.$axios.get('http://localhost:8000/api/clubs').then((response) => {
+            this.clubs = response.data.map((club) => {
+                return {
+                    value: club.name,
+                    code: club.id
+                }
+            })
+
+            this.defineTagify()
         });
     }
 }

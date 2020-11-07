@@ -1,4 +1,6 @@
 <template>
+    <!--    TODO: make normal validation (maybe Vuelidate)-->
+
     <div class="container mx-auto">
         <div class="bg-white border rounded-lg p-6 mt-6">
             <form class="w-full">
@@ -21,7 +23,8 @@
                         </label>
                         <input
                             :class="['appearance-none', 'block w-full', 'bg-gray-200', 'text-gray-700', 'border', errors.date ? 'border-red-500' : 'border-gray-200', 'rounded', 'py-3', 'px-4', 'leading-tight', 'focus:outline-none', 'focus:bg-white', 'focus:border-gray-500']"
-                            id="date" type="date" v-model="form.date" :min="$moment().format('YYYY-MM-DD')" autofocus required>
+                            id="date" type="date" v-model="form.date" autofocus
+                            required>
 
                         <p class="text-red-500 text-xs italic" v-if="errors.date">{{ errors.date[0] }}</p>
                     </div>
@@ -72,8 +75,11 @@
                             Сохранить
                         </button>
 
-                        <div v-if="$moment().isBefore(form.date)" class="ml-6 bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded-md relative">
-                            <span class="block sm:inline">Эта новость будет опубликована {{ $moment(form.date).format('DD.MM.YYYY') }}</span>
+                        <div v-if="$moment().isBefore(form.date)"
+                             class="ml-6 bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded-md relative">
+                            <span class="block sm:inline">Эта новость будет опубликована {{
+                                    $moment(form.date).format('DD.MM.YYYY')
+                            }}</span>
                         </div>
                     </div>
                 </div>
@@ -86,16 +92,16 @@
 import Tagify from "@yaireo/tagify";
 
 export default {
-    middleware: 'admin',
-    props: [
-        'news'
+    middleware: [
+        'admin'
     ],
+
     data() {
         return {
             form: {
                 title: '',
                 body: '',
-                date: this.$moment().format('YYYY-MM-DD'),
+                date: null,
                 clubs: ''
             },
             clubs: [],
@@ -115,8 +121,8 @@ export default {
 
             this.form.clubs = this.tagify.value.map((club) => club.code)
 
-            this.$axios('http://localhost:8000/api/news', {
-                method: 'post',
+            this.$axios(`http://localhost:8000/api/news/${this.$route.params.id}/`, {
+                method: 'put',
                 withCredentials: true,
 
                 data: this.form,
@@ -129,20 +135,9 @@ export default {
                     this.errors = error.response.data.errors;
                 }
             });
-        }
-    },
-    mounted() {
-        console.log(this.news)
-
-        let input = document.getElementById("clubs");
-
-        this.$axios.get('http://localhost:8000/api/clubs').then((response) => {
-            this.clubs = response.data.map((club) => {
-                return {
-                    value: club.name,
-                    code: club.id
-                }
-            })
+        },
+        defineTagify() {
+            let input = document.getElementById("clubs");
 
             this.tagify = new Tagify(input, {
                 whitelist: this.clubs,
@@ -152,8 +147,29 @@ export default {
                     closeOnSelect: true
                 }
             });
+        }
+    },
+    async fetch() {
+        this.$axios.get('http://localhost:8000/api/news/' + this.$route.params.id).then((response) => {
+            this.form.title = response.data.title;
+            this.form.body = response.data.body;
+            this.form.date = this.$moment(response.data.date).format('YYYY-MM-DD');
+            this.form.clubs = response.data.clubs.map((c) => {
+                return c.name
+            }).join()
+        })
+
+        this.$axios.get('http://localhost:8000/api/clubs').then((response) => {
+            this.clubs = response.data.map((club) => {
+                return {
+                    value: club.name,
+                    code: club.id,
+                }
+            })
+
+            this.defineTagify()
         });
-    }
+    },
 }
 </script>
 

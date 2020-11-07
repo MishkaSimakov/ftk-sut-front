@@ -5,6 +5,9 @@
 
             <p class="text-center text-gray-500 text-5xl mt-6">Вы не администратор!</p>
         </div>
+        <div v-else>
+            Error!
+        </div>
     </div>
 </template>
 
